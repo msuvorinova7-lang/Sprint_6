@@ -1,45 +1,41 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from pages.base_page import BasePage
+from locators import HomePageLocators, QuestionLocators
+from config import Config
+import allure
 
-class HomePage:
-    ORDER_TOP_BUTTON = (By.XPATH, "//button[@class='Button_Button__ra12g' and text()='Заказать']")
-    ORDER_BOTTOM_BUTTON = (By.XPATH, "//div[@class='Home_FinishButton__1_cWm']//button[text()='Заказать']")
-    SAMOKAT_LOGO = (By.XPATH, "//img[@alt='Scooter']")
-    YANDEX_LOGO = (By.XPATH, "//img[@alt='Yandex']")
-    COOKIE_BUTTON = (By.ID, "rcc-confirm-button")
-    
+class HomePage(BasePage):
     def __init__(self, driver):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        super().__init__(driver)
     
+    @allure.step("Принять куки")
     def accept_cookies(self):
         try:
-            self.driver.find_element(*self.COOKIE_BUTTON).click()
+            self.click(HomePageLocators.COOKIE_BUTTON)
         except:
             pass
     
+    @allure.step("Нажать верхнюю кнопку 'Заказать'")
     def click_order_top(self):
-        self.wait.until(EC.element_to_be_clickable(self.ORDER_TOP_BUTTON)).click()
+        self.click(HomePageLocators.ORDER_TOP_BUTTON)
     
+    @allure.step("Нажать нижнюю кнопку 'Заказать'")
     def click_order_bottom(self):
-        button = self.driver.find_element(*self.ORDER_BOTTOM_BUTTON)
-        self.driver.execute_script("arguments[0].scrollIntoView();", button)
-        self.wait.until(EC.element_to_be_clickable(self.ORDER_BOTTOM_BUTTON)).click()
+        self.scroll_to_element(HomePageLocators.ORDER_BOTTOM_BUTTON)
+        self.click(HomePageLocators.ORDER_BOTTOM_BUTTON)
     
+    @allure.step("Кликнуть на вопрос")
     def click_question(self, index):
-        question = (By.ID, f"accordion__heading-{index}")
-        self.wait.until(EC.element_to_be_clickable(question)).click()
+        self.scroll_to_element(QuestionLocators.get_question(index))
+        self.click(QuestionLocators.get_question(index))
     
+    @allure.step("Получить текст ответа")
     def get_answer_text(self, index):
-        answer = (By.ID, f"accordion__panel-{index}")
-        self.wait.until(EC.visibility_of_element_located(answer))
-        return self.driver.find_element(*answer).text
+        return self.get_text(QuestionLocators.get_answer(index))
     
+    @allure.step("Нажать на логотип Самоката")
     def click_samokat_logo(self):
-        self.driver.find_element(*self.SAMOKAT_LOGO).click()
+        self.click(HomePageLocators.SAMOKAT_LOGO)
     
+    @allure.step("Нажать на логотип Яндекса")
     def click_yandex_logo(self):
-        """Клик по логотипу Яндекса через JavaScript (для Firefox)"""
-        logo = self.driver.find_element(*self.YANDEX_LOGO)
-        self.driver.execute_script("arguments[0].click();", logo)
+        self.click_js(HomePageLocators.YANDEX_LOGO)

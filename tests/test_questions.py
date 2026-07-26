@@ -1,9 +1,10 @@
+import allure
 import pytest
-from selenium.webdriver.common.by import By
 from pages.home_page import HomePage
 
+@allure.epic("Тесты вопросов")
 class TestQuestions:
-    # Ожидаемые ответы (обновлённые)
+    
     ANSWERS = [
         "Сутки — 400 рублей. Оплата курьеру — наличными или картой.",
         "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим.",
@@ -15,15 +16,13 @@ class TestQuestions:
         "Да, обязательно. Всем самокатов! И Москве, и Московской области."
     ]
     
+    @allure.title("Проверка ответа на вопрос {question_index}")
+    @allure.feature("Вопросы о важном")
+    @allure.story("Проверка ответов")
     @pytest.mark.parametrize("question_index", range(8))
     def test_question_answer(self, driver, question_index):
-        """Проверка ответов на вопросы"""
         home_page = HomePage(driver)
         home_page.accept_cookies()
-        
-        # Скролл до вопроса
-        question = driver.find_element(By.ID, f"accordion__heading-{question_index}")
-        driver.execute_script("arguments[0].scrollIntoView();", question)
         
         home_page.click_question(question_index)
         actual_answer = home_page.get_answer_text(question_index)
