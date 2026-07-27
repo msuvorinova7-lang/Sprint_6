@@ -2,8 +2,6 @@ from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from locators import OrderPageLocators
 import allure
-import time
-from selenium.common.exceptions import TimeoutException
 
 class OrderPage(BasePage):
     def __init__(self, driver):
@@ -47,7 +45,7 @@ class OrderPage(BasePage):
     @allure.step("Выбрать срок аренды")
     def select_rental_period(self, period_text):
         self.scroll_to_element(OrderPageLocators.RENTAL_PERIOD)
-        time.sleep(0.5)
+        self.wait_for_clickable(OrderPageLocators.RENTAL_PERIOD)
         self.click(OrderPageLocators.RENTAL_PERIOD)
         period_locator = (By.XPATH, f"//div[@class='Dropdown-option' and text()='{period_text}']")
         self.wait_for_clickable(period_locator)
@@ -67,32 +65,20 @@ class OrderPage(BasePage):
     @allure.step("Нажать 'Заказать'")
     def click_order(self):
         self.scroll_to_element(OrderPageLocators.ORDER_BUTTON)
-        time.sleep(0.5)
+        self.wait_for_clickable(OrderPageLocators.ORDER_BUTTON)
         self.click(OrderPageLocators.ORDER_BUTTON)
     
     @allure.step("Подтвердить заказ")
     def confirm_order(self):
-        try:
-            self.wait_for_visibility(OrderPageLocators.CONFIRM_MODAL)
-            self.wait_for_clickable(OrderPageLocators.CONFIRM_YES_BUTTON)
-            self.scroll_to_element(OrderPageLocators.CONFIRM_YES_BUTTON)
-            time.sleep(0.5)
-            self.click_js(OrderPageLocators.CONFIRM_YES_BUTTON)
-        except TimeoutException:
-            try:
-                yes_button = (By.XPATH, "//button[contains(text(), 'Да')]")
-                self.click_js(yes_button)
-            except:
-                self.driver.execute_script("document.querySelector('button.Button_Button__ra12g').click();")
+        self.wait_for_visibility(OrderPageLocators.CONFIRM_MODAL)
+        self.wait_for_clickable(OrderPageLocators.CONFIRM_YES_BUTTON)
+        self.scroll_to_element(OrderPageLocators.CONFIRM_YES_BUTTON)
+        self.click_js(OrderPageLocators.CONFIRM_YES_BUTTON)
     
     @allure.step("Проверить, что заказ создан")
     def is_order_created(self):
         try:
             self.wait_for_visibility(OrderPageLocators.ORDER_SUCCESS_HEADER)
             return True
-        except TimeoutException:
-            try:
-                self.wait_for_visibility(OrderPageLocators.ORDER_SUCCESS_TEXT)
-                return True
-            except TimeoutException:
-                return False
+        except:
+            return False

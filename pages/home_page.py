@@ -1,6 +1,5 @@
 from pages.base_page import BasePage
 from locators import HomePageLocators, QuestionLocators
-from config import Config
 import allure
 
 class HomePage(BasePage):

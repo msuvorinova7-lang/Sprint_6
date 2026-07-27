@@ -16,7 +16,20 @@ class TestOrder:
             "date": "25.07.2026",
             "period": "сутки",
             "color": "чёрный",
-            "comment": "Позвоните за час"
+            "comment": "Позвоните за час",
+            "button": "top"
+        },
+        {
+            "name": "Иван",
+            "surname": "Петров",
+            "address": "ул. Ленина, 1",
+            "metro": "Сокольники",
+            "phone": "+79998887766",
+            "date": "25.07.2026",
+            "period": "сутки",
+            "color": "чёрный",
+            "comment": "Позвоните за час",
+            "button": "bottom"
         },
         {
             "name": "Мария",
@@ -27,20 +40,32 @@ class TestOrder:
             "date": "26.07.2026",
             "period": "двое суток",
             "color": "серая",
-            "comment": "Без звонка"
+            "comment": "Без звонка",
+            "button": "top"
+        },
+        {
+            "name": "Мария",
+            "surname": "Иванова",
+            "address": "пр. Мира, 5",
+            "metro": "Театральная",
+            "phone": "+79112223344",
+            "date": "26.07.2026",
+            "period": "двое суток",
+            "color": "серая",
+            "comment": "Без звонка",
+            "button": "bottom"
         }
     ]
     
-    @allure.title("Позитивный сценарий заказа через {button_position} кнопку, данные: {order_data[name]}")
+    @allure.title("Позитивный сценарий заказа через {order_data[button]} кнопку, данные: {order_data[name]}")
     @allure.feature("Заказ самоката")
     @allure.story("Позитивный сценарий")
     @pytest.mark.parametrize("order_data", order_data)
-    @pytest.mark.parametrize("button_position", ["top", "bottom"])
-    def test_positive_order(self, driver, order_data, button_position):
+    def test_positive_order(self, driver, order_data):
         home_page = HomePage(driver)
         home_page.accept_cookies()
         
-        if button_position == "top":
+        if order_data["button"] == "top":
             home_page.click_order_top()
         else:
             home_page.click_order_bottom()

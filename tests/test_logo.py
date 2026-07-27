@@ -30,20 +30,13 @@ class TestLogo:
         
         home_page.click_yandex_logo()
         
-        # Ждём появления новой вкладки
-        import time
-        time.sleep(2)
-        
-        # Переключаемся на новую вкладку через BasePage
+        home_page.wait_for_new_window(original_window)
         home_page.switch_to_new_window(original_window)
-        
-        # Ждём загрузки страницы
-        time.sleep(2)
+        home_page.wait_for_url_change("about:blank")
         
         current_url = home_page.get_current_url()
         assert "dzen.ru" in current_url or "yandex.ru" in current_url, \
             f"Неверный URL: {current_url}"
         
-        # Закрываем вкладку через BasePage
         home_page.close_current_window()
         home_page.switch_to_window(original_window)

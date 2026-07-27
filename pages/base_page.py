@@ -73,3 +73,15 @@ class BasePage:
     @allure.step("Получить текущее окно")
     def get_current_window_handle(self):
         return self.driver.current_window_handle
+    
+    @allure.step("Ожидать появления новой вкладки")
+    def wait_for_new_window(self, original_window):
+        self.wait.until(lambda d: len(d.window_handles) > 1)
+    
+    @allure.step("Ожидать изменения URL")
+    def wait_for_url_change(self, url):
+        self.wait.until(lambda d: d.current_url != url)
+    
+    @allure.step("Закрыть модальное окно")
+    def close_modal(self):
+        self.driver.execute_script("document.querySelector('button.Button_Button__ra12g').click();")
