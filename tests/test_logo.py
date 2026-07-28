@@ -26,12 +26,12 @@ class TestLogo:
         home_page = HomePage(driver)
         home_page.accept_cookies()
         
-        original_window = home_page.get_current_window_handle()
+        window_count_before = len(home_page.get_window_handles())
         
         home_page.click_yandex_logo()
         
-        home_page.wait_for_new_window(original_window)
-        home_page.switch_to_new_window(original_window)
+        home_page.wait_for_new_window(window_count_before)
+        home_page.switch_to_new_window()
         home_page.wait_for_url_change("about:blank")
         
         current_url = home_page.get_current_url()
@@ -39,4 +39,4 @@ class TestLogo:
             f"Неверный URL: {current_url}"
         
         home_page.close_current_window()
-        home_page.switch_to_window(original_window)
+        home_page.switch_to_window_by_index(0)

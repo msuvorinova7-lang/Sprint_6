@@ -52,19 +52,17 @@ class BasePage:
         return self.driver.current_url
     
     @allure.step("Переключиться на новую вкладку")
-    def switch_to_new_window(self, original_window):
-        for window_handle in self.driver.window_handles:
-            if window_handle != original_window:
-                self.driver.switch_to.window(window_handle)
-                break
+    def switch_to_new_window(self):
+        """Переключается на последнюю открытую вкладку"""
+        self.driver.switch_to.window(self.driver.window_handles[-1])
     
     @allure.step("Закрыть текущую вкладку")
     def close_current_window(self):
         self.driver.close()
     
-    @allure.step("Переключиться на вкладку")
-    def switch_to_window(self, window_handle):
-        self.driver.switch_to.window(window_handle)
+    @allure.step("Переключиться на вкладку по индексу")
+    def switch_to_window_by_index(self, index):
+        self.driver.switch_to.window(self.driver.window_handles[index])
     
     @allure.step("Получить все окна")
     def get_window_handles(self):
@@ -75,8 +73,8 @@ class BasePage:
         return self.driver.current_window_handle
     
     @allure.step("Ожидать появления новой вкладки")
-    def wait_for_new_window(self, original_window):
-        self.wait.until(lambda d: len(d.window_handles) > 1)
+    def wait_for_new_window(self, window_count_before):
+        self.wait.until(lambda d: len(d.window_handles) > window_count_before)
     
     @allure.step("Ожидать изменения URL")
     def wait_for_url_change(self, url):

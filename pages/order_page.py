@@ -51,12 +51,13 @@ class OrderPage(BasePage):
         self.wait_for_clickable(period_locator)
         self.click(period_locator)
     
-    @allure.step("Выбрать цвет")
-    def select_color(self, color):
-        if color.lower() in ["чёрный", "black"]:
-            self.click(OrderPageLocators.COLOR_BLACK)
-        elif color.lower() in ["серая", "grey"]:
-            self.click(OrderPageLocators.COLOR_GREY)
+    @allure.step("Выбрать чёрный цвет")
+    def select_black_color(self):
+        self.click(OrderPageLocators.COLOR_BLACK)
+    
+    @allure.step("Выбрать серый цвет")
+    def select_grey_color(self):
+        self.click(OrderPageLocators.COLOR_GREY)
     
     @allure.step("Заполнить комментарий")
     def fill_comment(self, comment):
